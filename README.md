@@ -66,3 +66,31 @@ Il programma crea automaticamente una cartella `output/` contenente:
 output/
 ├── openalex_ritrattazioni_correzioni_2016_2017_2020_2021_2024_2025.csv
 └── openalex_ritrattazioni_correzioni_report_2016_2017_2020_2021_2024_2025.html
+
+````md
+## Avvio con Docker
+
+Il progetto può essere avviato tramite Docker senza installare Rust localmente.
+
+Build dell’immagine:
+
+```bash
+docker build -t openalex-rust .
+````
+
+Esecuzione del container:
+
+```bash
+docker run --rm -v "${PWD}/output:/app/output" openalex-rust
+```
+
+
+```bash
+docker run --rm -v ${PWD}/output:/app/output openalex-rust
+```
+
+I risultati verranno salvati nella cartella locale:
+
+```text
+output/
+```
