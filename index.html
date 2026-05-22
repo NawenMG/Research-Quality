@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard OpenAlex</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f7fb;
+        margin: 0;
+        padding: 28px;
+        color: #111827;
+      }
+
+      .dashboard {
+        max-width: 1400px;
+        margin: auto;
+      }
+
+      h1 {
+        margin: 0 0 6px 0;
+        font-size: 30px;
+      }
+
+      .subtitle {
+        color: #4b5563;
+        margin-bottom: 24px;
+        font-size: 15px;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .card {
+        background: white;
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+        border: 1px solid #e5e7eb;
+      }
+
+      .card-title {
+        font-size: 13px;
+        color: #6b7280;
+        margin-bottom: 8px;
+      }
+
+      .card-value {
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .section {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 20px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+        border: 1px solid #e5e7eb;
+      }
+
+      .method-box {
+        background: #eff6ff;
+        border-left: 5px solid #2563eb;
+        padding: 14px 16px;
+        border-radius: 10px;
+        margin-bottom: 18px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .warning-box {
+        background: #fff7ed;
+        border-left: 5px solid #f97316;
+        padding: 14px 16px;
+        border-radius: 10px;
+        margin-bottom: 18px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .scroll {
+        overflow-x: auto;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 13px;
+        margin-top: 12px;
+      }
+
+      th {
+        background: #111827;
+        color: white;
+        padding: 10px;
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      th:first-child {
+        text-align: left;
+      }
+
+      td {
+        border: 1px solid #e5e7eb;
+        padding: 9px;
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      td:first-child {
+        text-align: left;
+        font-weight: 600;
+      }
+
+      tr:nth-child(even) {
+        background: #f9fafb;
+      }
+
+      .small-note {
+        color: #6b7280;
+        font-size: 12px;
+        margin-top: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard">
+      <h1>Dashboard OpenAlex</h1>
+      <div class="subtitle">
+        Ritrattazioni e correzioni per categoria disciplinare e periodo:
+        2016-2017, 2020-2021, 2024-2025.
+      </div>
+      <div class="cards">
+        <div class="card">
+          <div class="card-title">Totale articoli osservati</div>
+          <div class="card-value">78.677.455</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Totale ritrattazioni</div>
+          <div class="card-value">84.079</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Totale correction</div>
+          <div class="card-value">527.971</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Totale erratum</div>
+          <div class="card-value">4.103</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Totale correction + erratum</div>
+          <div class="card-value">532.074</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">% ritrattati complessiva</div>
+          <div class="card-value">0.1069%</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">% correction complessiva</div>
+          <div class="card-value">0.6711%</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">% erratum complessiva</div>
+          <div class="card-value">0.0052%</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">% correction + erratum complessiva</div>
+          <div class="card-value">0.6763%</div>
+        </div>
+      </div>
+      <div class="method-box">
+        <strong>Metodo:</strong>
+        le ritrattazioni sono misurate tramite il campo strutturato
+        <code>is_retracted</code> di OpenAlex. Le correzioni sono approssimate
+        tramite ricerca testuale nei titoli e negli abstract usando le keyword
+        <code>correction</code> ed <code>erratum</code>.
+      </div>
+
+      <div class="warning-box">
+        <strong>Attenzione metodologica:</strong>
+        il dato sulle ritrattazioni è più robusto. Il dato sulle correzioni è
+        una proxy esplorativa: la keyword <code>correction</code> può
+        intercettare anche articoli che parlano di correzioni statistiche,
+        tecniche o metodologiche, non necessariamente correzioni editoriali.
+        Inoltre, <code>correction + erratum</code> è una somma non deduplicata.
+      </div>
+      <div class="section">
+        <h2>Percentuale di articoli ritrattati</h2>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Categoria disciplinare</th>
+                <th>Pre-Covid 2016-2017</th>
+                <th>Covid 2020-2021</th>
+                <th>Post-Covid 2024-2025</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Medicine &amp; Health Sciences</td>
+                <td>0.0564%</td>
+                <td>0.1472%</td>
+                <td>0.1224%</td>
+              </tr>
+              <tr>
+                <td>Life Sciences</td>
+                <td>0.0875%</td>
+                <td>0.1917%</td>
+                <td>0.1518%</td>
+              </tr>
+              <tr>
+                <td>Physical Sciences</td>
+                <td>0.0509%</td>
+                <td>0.1546%</td>
+                <td>0.1293%</td>
+              </tr>
+              <tr>
+                <td>Engineering</td>
+                <td>0.0408%</td>
+                <td>0.2093%</td>
+                <td>0.1234%</td>
+              </tr>
+              <tr>
+                <td>Computer Science</td>
+                <td>0.0284%</td>
+                <td>0.2219%</td>
+                <td>0.1430%</td>
+              </tr>
+              <tr>
+                <td>Social Sciences</td>
+                <td>0.0233%</td>
+                <td>0.1255%</td>
+                <td>0.0899%</td>
+              </tr>
+              <tr>
+                <td>Economics &amp; Management</td>
+                <td>0.0194%</td>
+                <td>0.1400%</td>
+                <td>0.1243%</td>
+              </tr>
+              <tr>
+                <td>Humanities</td>
+                <td>0.0126%</td>
+                <td>0.0750%</td>
+                <td>0.0612%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <h2>Percentuale keyword “correction”</h2>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Categoria disciplinare</th>
+                <th>Pre-Covid 2016-2017</th>
+                <th>Covid 2020-2021</th>
+                <th>Post-Covid 2024-2025</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Medicine &amp; Health Sciences</td>
+                <td>0.7192%</td>
+                <td>0.8773%</td>
+                <td>0.9134%</td>
+              </tr>
+              <tr>
+                <td>Life Sciences</td>
+                <td>0.4338%</td>
+                <td>0.6398%</td>
+                <td>0.6011%</td>
+              </tr>
+              <tr>
+                <td>Physical Sciences</td>
+                <td>0.7980%</td>
+                <td>0.9286%</td>
+                <td>1.0338%</td>
+              </tr>
+              <tr>
+                <td>Engineering</td>
+                <td>0.5913%</td>
+                <td>0.7351%</td>
+                <td>0.8229%</td>
+              </tr>
+              <tr>
+                <td>Computer Science</td>
+                <td>0.5604%</td>
+                <td>0.8362%</td>
+                <td>1.0859%</td>
+              </tr>
+              <tr>
+                <td>Social Sciences</td>
+                <td>0.3293%</td>
+                <td>0.4871%</td>
+                <td>0.5225%</td>
+              </tr>
+              <tr>
+                <td>Economics &amp; Management</td>
+                <td>0.4209%</td>
+                <td>0.5152%</td>
+                <td>0.5200%</td>
+              </tr>
+              <tr>
+                <td>Humanities</td>
+                <td>0.2391%</td>
+                <td>0.3281%</td>
+                <td>0.4092%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <h2>Percentuale keyword “erratum”</h2>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Categoria disciplinare</th>
+                <th>Pre-Covid 2016-2017</th>
+                <th>Covid 2020-2021</th>
+                <th>Post-Covid 2024-2025</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Medicine &amp; Health Sciences</td>
+                <td>0.0048%</td>
+                <td>0.0064%</td>
+                <td>0.0120%</td>
+              </tr>
+              <tr>
+                <td>Life Sciences</td>
+                <td>0.0037%</td>
+                <td>0.0045%</td>
+                <td>0.0076%</td>
+              </tr>
+              <tr>
+                <td>Physical Sciences</td>
+                <td>0.0035%</td>
+                <td>0.0038%</td>
+                <td>0.0135%</td>
+              </tr>
+              <tr>
+                <td>Engineering</td>
+                <td>0.0020%</td>
+                <td>0.0021%</td>
+                <td>0.0063%</td>
+              </tr>
+              <tr>
+                <td>Computer Science</td>
+                <td>0.0029%</td>
+                <td>0.0042%</td>
+                <td>0.0106%</td>
+              </tr>
+              <tr>
+                <td>Social Sciences</td>
+                <td>0.0026%</td>
+                <td>0.0034%</td>
+                <td>0.0054%</td>
+              </tr>
+              <tr>
+                <td>Economics &amp; Management</td>
+                <td>0.0019%</td>
+                <td>0.0019%</td>
+                <td>0.0035%</td>
+              </tr>
+              <tr>
+                <td>Humanities</td>
+                <td>0.0021%</td>
+                <td>0.0027%</td>
+                <td>0.0050%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <h2>Percentuale proxy correzioni “correction + erratum”</h2>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Categoria disciplinare</th>
+                <th>Pre-Covid 2016-2017</th>
+                <th>Covid 2020-2021</th>
+                <th>Post-Covid 2024-2025</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Medicine &amp; Health Sciences</td>
+                <td>0.7240%</td>
+                <td>0.8838%</td>
+                <td>0.9254%</td>
+              </tr>
+              <tr>
+                <td>Life Sciences</td>
+                <td>0.4376%</td>
+                <td>0.6443%</td>
+                <td>0.6086%</td>
+              </tr>
+              <tr>
+                <td>Physical Sciences</td>
+                <td>0.8015%</td>
+                <td>0.9324%</td>
+                <td>1.0473%</td>
+              </tr>
+              <tr>
+                <td>Engineering</td>
+                <td>0.5933%</td>
+                <td>0.7372%</td>
+                <td>0.8291%</td>
+              </tr>
+              <tr>
+                <td>Computer Science</td>
+                <td>0.5634%</td>
+                <td>0.8404%</td>
+                <td>1.0965%</td>
+              </tr>
+              <tr>
+                <td>Social Sciences</td>
+                <td>0.3319%</td>
+                <td>0.4905%</td>
+                <td>0.5280%</td>
+              </tr>
+              <tr>
+                <td>Economics &amp; Management</td>
+                <td>0.4228%</td>
+                <td>0.5171%</td>
+                <td>0.5235%</td>
+              </tr>
+              <tr>
+                <td>Humanities</td>
+                <td>0.2412%</td>
+                <td>0.3308%</td>
+                <td>0.4142%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="small-note">
+          Nota: questa somma non è deduplicata. Serve solo come indicatore
+          esplorativo.
+        </div>
+      </div>
+      <div class="section">
+        <h2>Tabella completa</h2>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Categoria disciplinare</th>
+                <th>Periodo</th>
+                <th>Data inizio</th>
+                <th>Data fine</th>
+                <th>Totale articoli</th>
+                <th>Non ritrattati</th>
+                <th>Ritrattati</th>
+                <th>% ritrattati</th>
+                <th>Correction count</th>
+                <th>% correction</th>
+                <th>Erratum count</th>
+                <th>% erratum</th>
+                <th>Correction + Erratum proxy</th>
+                <th>% correction + erratum proxy</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Medicine &amp; Health Sciences</td>
+                <td>Pre-Covid 2016-2017</td>
+                <td>2016-01-01</td>
+                <td>2017-12-31</td>
+                <td>3.376.460</td>
+                <td>3.374.554</td>
+                <td>1.906</td>
+                <td>0.0564%</td>
+                <td>24.284</td>
+                <td>0.7192%</td>
+                <td>163</td>
+                <td>0.0048%</td>
+                <td>24.447</td>
+                <td>0.7240%</td>
+              </tr>
+              <tr>
+                <td>Medicine &amp; Health Sciences</td>
+                <td>Covid 2020-2021</td>
+                <td>2020-01-01</td>
+                <td>2021-12-31</td>
+                <td>4.077.856</td>
+                <td>4.071.852</td>
+                <td>6.004</td>
+                <td>0.1472%</td>
+                <td>35.776</td>
+                <td>0.8773%</td>
+                <td>263</td>
+                <td>0.0064%</td>
+                <td>36.039</td>
+                <td>0.8838%</td>
+              </tr>
+              <tr>
+                <td>Medicine &amp; Health Sciences</td>
+                <td>Post-Covid 2024-2025</td>
+                <td>2024-01-01</td>
+                <td>2025-12-31</td>
+                <td>4.048.843</td>
+                <td>4.043.886</td>
+                <td>4.957</td>
+                <td>0.1224%</td>
+                <td>36.983</td>
+                <td>0.9134%</td>
+                <td>485</td>
+                <td>0.0120%</td>
+                <td>37.468</td>
+                <td>0.9254%</td>
+              </tr>
+              <tr>
+                <td>Life Sciences</td>
+                <td>Pre-Covid 2016-2017</td>
+                <td>2016-01-01</td>
+                <td>2017-12-31</td>
+                <td>2.508.770</td>
+                <td>2.506.575</td>
+                <td>2.195</td>
+                <td>0.0875%</td>
+                <td>10.884</td>
+                <td>0.4338%</td>
+                <td>94</td>
+                <td>0.0037%</td>
+                <td>10.978</td>
+                <td>0.4376%</td>
+              </tr>
+              <tr>
+                <td>Life Sciences</td>
+                <td>Covid 2020-2021</td>
+                <td>2020-01-01</td>
+                <td>2021-12-31</td>
+                <td>2.807.831</td>
+                <td>2.802.448</td>
+                <td>5.383</td>
+                <td>0.1917%</td>
+                <td>17.964</td>
+                <td>0.6398%</td>
+                <td>127</td>
+                <td>0.0045%</td>
+                <td>18.091</td>
+                <td>0.6443%</td>
+              </tr>
+              <tr>
+                <td>Life Sciences</td>
+                <td>Post-Covid 2024-2025</td>
+                <td>2024-01-01</td>
+                <td>2025-12-31</td>
+                <td>2.361.343</td>
+                <td>2.357.759</td>
+                <td>3.584</td>
+                <td>0.1518%</td>
+                <td>14.193</td>
+                <td>0.6011%</td>
+                <td>179</td>
+                <td>0.0076%</td>
+                <td>14.372</td>
+                <td>0.6086%</td>
+              </tr>
+              <tr>
+                <td>Physical Sciences</td>
+                <td>Pre-Covid 2016-2017</td>
+                <td>2016-01-01</td>
+                <td>2017-12-31</td>
+                <td>4.126.115</td>
+                <td>4.124.013</td>
+                <td>2.102</td>
+                <td>0.0509%</td>
+                <td>32.925</td>
+                <td>0.7980%</td>
+                <td>145</td>
+                <td>0.0035%</td>
+                <td>33.070</td>
+                <td>0.8015%</td>
+              </tr>
+              <tr>
+                <td>Physical Sciences</td>
+                <td>Covid 2020-2021</td>
+                <td>2020-01-01</td>
+                <td>2021-12-31</td>
+                <td>4.348.361</td>
+                <td>4.341.637</td>
+                <td>6.724</td>
+                <td>0.1546%</td>
+                <td>40.377</td>
+                <td>0.9286%</td>
+                <td>167</td>
+                <td>0.0038%</td>
+                <td>40.544</td>
+                <td>0.9324%</td>
+              </tr>
+              <tr>
+                <td>Physical Sciences</td>
+                <td>Post-Covid 2024-2025</td>
+                <td>2024-01-01</td>
+                <td>2025-12-31</td>
+                <td>4.166.121</td>
+                <td>4.160.734</td>
+                <td>5.387</td>
+                <td>0.1293%</td>
+                <td>43.069</td>
+                <td>1.0338%</td>
+                <td>564</td>
+                <td>0.0135%</td>
+                <td>43.633</td>
+                <td>1.0473%</td>
+              </tr>
+              <tr>
+                <td>Engineering</td>
+                <td>Pre-Covid 2016-2017</td>
+                <td>2016-01-01</td>
+                <td>2017-12-31</td>
+                <td>2.091.141</td>
+                <td>2.090.288</td>
+                <td>853</td>
+                <td>0.0408%</td>
+                <td>12.365</td>
+                <td>0.5913%</td>
+                <td>41</td>
+                <td>0.0020%</td>
+                <td>12.406</td>
+                <td>0.5933%</td>
+              </tr>
+              <tr>
+                <td>Engineering</td>
+                <td>Covid 2020-2021</td>
+                <td>2020-01-01</td>
+                <td>2021-12-31</td>
+                <td>2.264.199</td>
+                <td>2.259.461</td>
+                <td>4.738</td>
+                <td>0.2093%</td>
+                <td>16.644</td>
+                <td>0.7351%</td>
+                <td>48</td>
+                <td>0.0021%</td>
+                <td>16.692</td>
+                <td>0.7372%</td>
+              </tr>
+              <tr>
+                <td>Engineering</td>
+                <td>Post-Covid 2024-2025</td>
+                <td>2024-01-01</td>
+                <td>2025-12-31</td>
+                <td>2.263.320</td>
+                <td>2.260.526</td>
+                <td>2.794</td>
+                <td>0.1234%</td>
+                <td>18.624</td>
+                <td>0.8229%</td>
+                <td>142</td>
+                <td>0.0063%</td>
+                <td>18.766</td>
+                <td>0.8291%</td>
+              </tr>
+              <tr>
+                <td>Computer Science</td>
+                <td>Pre-Covid 2016-2017</td>
+                <td>2016-01-01</td>
+                <td>2017-12-31</td>
+                <td>4.742.371</td>
+                <td>4.741.025</td>
+                <td>1.346</td>
+                <td>0.0284%</td>
+                <td>26.578</td>
+                <td>0.5604%</td>
+                <td>139</td>
+                <td>0.0029%</td>
+                <td>26.717</td>
+                <td>0.5634%</td>
+              </tr>
+              <tr>
+                <td>Computer Science</td>
+                <td>Covid 2020-2021</td>
+                <td>2020-01-01</td>
+                <td>2021-12-31</td>
+                <td>4.486.290</td>
+                <td>4.476.336</td>
+                <td>9.954</td>
+                <td>0.2219%</td>
+                <td>37.514</td>
+                <td>0.8362%</td>
+                <td>190</td>
+                <td>0.0042%</td>
+                <td>37.704</td>
+                <td>0.8404%</td>
+              </tr>
+              <tr>
+                <td>Computer Science</td>
+                <td>Post-Covid 2024-2025</td>
+                <td>2024-01-01</td>
+                <td>2025-12-31</td>
+                <td>4.669.908</td>
+                <td>4.663.232</td>
+                <td>6.676</td>
+                <td>0.1430%</td>
+                <td>50.712</td>
+                <td>1.0859%</td>
+                <td>494</td>
+                <td>0.0106%</td>
+                <td>51.206</td>
+                <td>1.0965%</td>
+              </tr>
+              <tr>
+                <td>Social Sciences</td>
+                <td>Pre-Covid 2016-2017</td>
+                <td>2016-01-01</td>
+                <td>2017-12-31</td>
+                <td>3.781.423</td>
+                <td>3.780.542</td>
+                <td>881</td>
+                <td>0.0233%</td>
+                <td>12.451</td>
+                <td>0.3293%</td>
+                <td>98</td>
+                <td>0.0026%</td>
+                <td>12.549</td>
+                <td>0.3319%</td>
+              </tr>
+              <tr>
+                <td>Social Sciences</td>
+                <td>Covid 2020-2021</td>
+                <td>2020-01-01</td>
+                <td>2021-12-31</td>
+                <td>4.148.982</td>
+                <td>4.143.775</td>
+                <td>5.207</td>
+                <td>0.1255%</td>
+                <td>20.208</td>
+                <td>0.4871%</td>
+                <td>141</td>
+                <td>0.0034%</td>
+                <td>20.349</td>
+                <td>0.4905%</td>
+              </tr>
+              <tr>
+                <td>Social Sciences</td>
+                <td>Post-Covid 2024-2025</td>
+                <td>2024-01-01</td>
+                <td>2025-12-31</td>
+                <td>3.936.487</td>
+                <td>3.932.947</td>
+                <td>3.540</td>
+                <td>0.0899%</td>
+                <td>20.570</td>
+                <td>0.5225%</td>
+                <td>213</td>
+                <td>0.0054%</td>
+                <td>20.783</td>
+                <td>0.5280%</td>
+              </tr>
+              <tr>
+                <td>Economics &amp; Management</td>
+                <td>Pre-Covid 2016-2017</td>
+                <td>2016-01-01</td>
+                <td>2017-12-31</td>
+                <td>1.868.093</td>
+                <td>1.867.730</td>
+                <td>363</td>
+                <td>0.0194%</td>
+                <td>7.863</td>
+                <td>0.4209%</td>
+                <td>35</td>
+                <td>0.0019%</td>
+                <td>7.898</td>
+                <td>0.4228%</td>
+              </tr>
+              <tr>
+                <td>Economics &amp; Management</td>
+                <td>Covid 2020-2021</td>
+                <td>2020-01-01</td>
+                <td>2021-12-31</td>
+                <td>2.062.759</td>
+                <td>2.059.872</td>
+                <td>2.887</td>
+                <td>0.1400%</td>
+                <td>10.627</td>
+                <td>0.5152%</td>
+                <td>40</td>
+                <td>0.0019%</td>
+                <td>10.667</td>
+                <td>0.5171%</td>
+              </tr>
+              <tr>
+                <td>Economics &amp; Management</td>
+                <td>Post-Covid 2024-2025</td>
+                <td>2024-01-01</td>
+                <td>2025-12-31</td>
+                <td>1.975.251</td>
+                <td>1.972.795</td>
+                <td>2.456</td>
+                <td>0.1243%</td>
+                <td>10.271</td>
+                <td>0.5200%</td>
+                <td>69</td>
+                <td>0.0035%</td>
+                <td>10.340</td>
+                <td>0.5235%</td>
+              </tr>
+              <tr>
+                <td>Humanities</td>
+                <td>Pre-Covid 2016-2017</td>
+                <td>2016-01-01</td>
+                <td>2017-12-31</td>
+                <td>3.167.049</td>
+                <td>3.166.649</td>
+                <td>400</td>
+                <td>0.0126%</td>
+                <td>7.572</td>
+                <td>0.2391%</td>
+                <td>67</td>
+                <td>0.0021%</td>
+                <td>7.639</td>
+                <td>0.2412%</td>
+              </tr>
+              <tr>
+                <td>Humanities</td>
+                <td>Covid 2020-2021</td>
+                <td>2020-01-01</td>
+                <td>2021-12-31</td>
+                <td>3.172.438</td>
+                <td>3.170.058</td>
+                <td>2.380</td>
+                <td>0.0750%</td>
+                <td>10.409</td>
+                <td>0.3281%</td>
+                <td>87</td>
+                <td>0.0027%</td>
+                <td>10.496</td>
+                <td>0.3308%</td>
+              </tr>
+              <tr>
+                <td>Humanities</td>
+                <td>Post-Covid 2024-2025</td>
+                <td>2024-01-01</td>
+                <td>2025-12-31</td>
+                <td>2.226.044</td>
+                <td>2.224.682</td>
+                <td>1.362</td>
+                <td>0.0612%</td>
+                <td>9.108</td>
+                <td>0.4092%</td>
+                <td>112</td>
+                <td>0.0050%</td>
+                <td>9.220</td>
+                <td>0.4142%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="small-note">Fonte: OpenAlex API.</div>
+    </div>
+  </body>
+</html>
